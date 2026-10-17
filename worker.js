@@ -6,8 +6,9 @@ export default {
       method: "POST",
       headers: { Authorization: "Bearer " + env.GROQ_API_KEY.trim(), "content-type": "application/json" },
       body: JSON.stringify({
-        model: "llama-3.1-8b-instant",
-        max_tokens: 80,
+        model: "openai/gpt-oss-20b",
+        max_tokens: 300,
+        reasoning_effort: "low",
         messages: [
           { role: "system", content: "Jawab satu kalimat, maksimal 150 karakter, bahasa Indonesia gaul, teks polos." },
           { role: "user", content: q },
@@ -17,6 +18,10 @@ export default {
     const d = await res.json();
     if (!res.ok) return new Response("Groq " + res.status + ": " + (d.error?.message || "unknown").slice(0, 150));
     let t = (d.choices?.[0]?.message?.content || "Kosong").replace(/\s+/g, " ").trim();
-    return new Response(t.slice(0, 180));
+    if (t.length > 180) {
+      t = t.slice(0, 180);
+      t = t.slice(0, t.lastIndexOf(" ")) + "...";
+    }
+    return new Response(t);
   },
 };
