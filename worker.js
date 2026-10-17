@@ -14,7 +14,7 @@ export default {
       return new Response(j.data.map((x) => x.id).join("\n"));
     }
 
-    const model = u.searchParams.get("m") || "openai/gpt-oss-20b";
+    const model = u.searchParams.get("m") || "qwen/qwen3.8-27b";
     const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: { Authorization: "Bearer " + key, "content-type": "application/json" },
