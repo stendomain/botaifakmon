@@ -1,14 +1,26 @@
 export default {
   async fetch(r, env) {
-    const q = new URL(r.url).searchParams.get("q") || "halo";
+    const u = new URL(r.url);
+    const q = u.searchParams.get("q") || "halo";
     if (!env.GROQ_API_KEY) return new Response("Secret GROQ_API_KEY tidak ditemukan");
+    const key = env.GROQ_API_KEY.trim();
+
+    if (u.searchParams.get("list")) {
+      const m = await fetch("https://api.groq.com/openai/v1/models", {
+        headers: { Authorization: "Bearer " + key },
+      });
+      const j = await m.json();
+      if (!m.ok) return new Response("Groq " + m.status + ": " + (j.error?.message || "unknown").slice(0, 150));
+      return new Response(j.data.map((x) => x.id).join("\n"));
+    }
+
+    const model = u.searchParams.get("m") || "openai/gpt-oss-20b";
     const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
-      headers: { Authorization: "Bearer " + env.GROQ_API_KEY.trim(), "content-type": "application/json" },
+      headers: { Authorization: "Bearer " + key, "content-type": "application/json" },
       body: JSON.stringify({
-        model: "openai/gpt-oss-20b",
+        model,
         max_tokens: 300,
-        reasoning_effort: "low",
         messages: [
           { role: "system", content: "Jawab satu kalimat, maksimal 150 karakter, bahasa Indonesia gaul, teks polos." },
           { role: "user", content: q },
@@ -16,7 +28,7 @@ export default {
       }),
     });
     const d = await res.json();
-    if (!res.ok) return new Response("Groq " + res.status + ": " + (d.error?.message || "unknown").slice(0, 150));
+    if (!res.ok) return new Response("Groq " + res.status + " (" + model + "): " + (d.error?.message || "unknown").slice(0, 120));
     let t = (d.choices?.[0]?.message?.content || "Kosong").replace(/\s+/g, " ").trim();
     if (t.length > 180) {
       t = t.slice(0, 180);
