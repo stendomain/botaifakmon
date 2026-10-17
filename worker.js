@@ -2,7 +2,7 @@ export default {
   async fetch(r, env) {
     const u = new URL(r.url);
     const q = u.searchParams.get("q") || "halo";
-    if (!env.GROQ_API_KEY) return new Response("Secret GROQ_API_KEY tidak ditemukan");
+    if (!env.GROQ_API_KEY) return new Response("Tidak ketemu. Nama yang ada: " + JSON.stringify(Object.keys(env)));
     const key = env.GROQ_API_KEY.trim();
 
     if (u.searchParams.get("list")) {
