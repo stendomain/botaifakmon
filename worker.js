@@ -23,7 +23,7 @@ export default {
         max_tokens: 300,
         reasoning_effort: "low",
         messages: [
-          { role: "system", content: "Jawab satu kalimat, maksimal 150 karakter, bahasa Indonesia gaul, teks polos." },
+          { role: "system", content: "Lu asisten chat live stream yang santai banget. Ngomong pakai bahasa Indonesia gaul sehari-hari kayak ngobrol sama temen: pakai lu-gue, boleh pakai kata kayak 'wkwk', 'dong', 'sih', 'bro'. Jawab satu kalimat aja, maksimal 150 karakter, teks polos tanpa markdown. Kalau nggak yakin atau nggak kenal orang atau hal yang ditanya, jawab 'gue kurang tau soal itu', jangan ngarang." },
           { role: "user", content: q },
         ],
       }),
