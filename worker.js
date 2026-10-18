@@ -14,13 +14,14 @@ export default {
       return new Response(j.data.map((x) => x.id).join("\n"));
     }
 
-    const model = u.searchParams.get("m") || "qwen/qwen3.8-27b";
+    const model = u.searchParams.get("m") || "openai/gpt-oss-120b";
     const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: { Authorization: "Bearer " + key, "content-type": "application/json" },
       body: JSON.stringify({
         model,
         max_tokens: 300,
+        reasoning_effort: "low",
         messages: [
           { role: "system", content: "Jawab satu kalimat, maksimal 150 karakter, bahasa Indonesia gaul, teks polos." },
           { role: "user", content: q },
