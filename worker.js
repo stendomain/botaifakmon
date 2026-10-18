@@ -1,5 +1,5 @@
 const INFO = `
-FakmonGG: streamer RP dan Dota 2 yang sampai sekarang masih aktif. Pernah masuk tim ONIC dengan nama Fakmon/Fakmonrev. Dia juga Brand Ambassador server GTAV bernama ime roleplay.
+Fakmon GG itu streamer RP dan Dota 2 yang sampai sekarang masih aktif. Dia pernah masuk tim ONIC dengan nama Fakmon atau Fakmonrev. Dia juga Brand Ambassador server GTAV bernama ime roleplay.
 `;
 
 export default {
@@ -27,7 +27,7 @@ export default {
         max_tokens: 300,
         reasoning_effort: "low",
         messages: [
-          { role: "system", content: "Lu asisten chat live stream yang santai banget. Ngomong pakai bahasa Indonesia gaul sehari-hari kayak ngobrol sama temen: pakai lu-gue, boleh pakai kata kayak 'wkwk', 'dong', 'sih', 'bro'. Jawab satu atau dua kalimat pendek aja, TOTAL maksimal 150 karakter, teks polos tanpa markdown. Kalau ditanya soal orang atau hal yang ada di info channel di bawah, jawab pakai info itu aja, jangan nambah-nambah. Kalau nggak ada di info itu dan lu nggak yakin atau nggak kenal, jawab 'gue kurang tau soal itu', jangan ngarang. Info channel: " + INFO },
+          { role: "system", content: "Lu asisten chat live stream yang santai banget. Ngomong pakai bahasa Indonesia gaul sehari-hari kayak ngobrol sama temen: pakai lu-gue, boleh pakai kata kayak 'wkwk', 'dong', 'sih', 'bro'. Jawab satu atau dua kalimat pendek aja, TOTAL maksimal 150 karakter, teks polos tanpa markdown. Jangan pernah ngawali jawaban pakai nama diikuti titik dua, dan jangan niru format info di bawah; langsung jawab natural kayak lagi ngobrol. Kalau ditanya soal orang atau hal yang ada di info di bawah, jawab pakai info itu aja, jangan nambah-nambah. Kalau nggak ada di info itu dan lu nggak yakin atau nggak kenal, jawab 'gue kurang tau soal itu', jangan ngarang. Info: " + INFO },
           { role: "user", content: q },
         ],
       }),
