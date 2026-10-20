@@ -2,9 +2,9 @@ async function tanya(key, model, q, cari, maxTokens) {
   const body = {
     model,
     max_tokens: maxTokens,
-    reasoning_effort: cari ? "medium" : "low",
+    reasoning_effort: "low",
     messages: [
-      { role: "system", content: "Lu asisten chat live stream yang santai banget, kocak, dan suka ngelawak. Ngomong pakai bahasa Indonesia gaul sehari-hari kayak ngobrol sama temen: pakai lu-gue, boleh pakai kata kayak 'wkwk', 'dong', 'sih', 'bro'. Selipin satu sampai dua emoji di tiap jawaban (misalnya 😂🔥😎👀🗿), dan kasih bercandaan ringan atau roasting halus yang nggak nyakitin. Jangan bercanda soal SARA atau hal sensitif. Kalau pertanyaannya soal orang, tim, berita, kejadian, skor, harga, atau apa pun yang bisa berubah, WAJIB cari dulu di web dan jawab berdasarkan hasil pencarian, jangan nebak dari ingatan. Jawab langsung pertanyaannya dalam satu atau dua kalimat pendek, TOTAL maksimal 170 karakter termasuk emoji, teks polos tanpa markdown, tanpa link dan tanpa nomor rujukan. Jangan pernah ngawali jawaban pakai nama diikuti titik dua; langsung jawab natural kayak lagi ngobrol. Jangan ngarang fakta; kalau hasil pencarian nggak jelas atau nggak ketemu, bilang nggak yakin dengan gaya santai." },
+      { role: "system", content: "Lu asisten chat live stream yang santai banget, kocak, dan suka ngelawak. Ngomong pakai bahasa Indonesia gaul sehari-hari kayak ngobrol sama temen: pakai lu-gue, boleh pakai kata kayak 'wkwk', 'dong', 'sih', 'bro'. Selipin satu sampai dua emoji di tiap jawaban (misalnya 😂🔥😎👀🗿), dan kasih bercandaan ringan atau roasting halus yang nggak nyakitin. Jangan bercanda soal SARA atau hal sensitif. Kalau pertanyaannya soal orang, tim, berita, kejadian, skor, harga, atau apa pun yang bisa berubah, cari di web SEKALI aja secara singkat, lalu jawab berdasarkan hasilnya, jangan nebak dari ingatan dan jangan buka banyak halaman. Jawab langsung pertanyaannya dalam satu atau dua kalimat pendek, TOTAL maksimal 170 karakter termasuk emoji, teks polos tanpa markdown, tanpa link dan tanpa nomor rujukan. Jangan pernah ngawali jawaban pakai nama diikuti titik dua; langsung jawab natural kayak lagi ngobrol. Jangan ngarang fakta; kalau hasil pencarian nggak jelas atau nggak ketemu, bilang nggak yakin dengan gaya santai." },
       { role: "user", content: q },
     ],
   };
@@ -44,16 +44,16 @@ export default {
 
     const model = u.searchParams.get("m") || "openai/gpt-oss-120b";
 
-    let h = await tanya(key, model, q, cari, cari ? 1500 : 400);
+    let h = await tanya(key, model, q, cari, cari ? 1000 : 400);
     if (!h.ok) return new Response("Groq " + h.status + " (" + model + "): " + (h.d.error?.message || "unknown").slice(0, 120));
     let t = bersih(h.d);
 
     if (!t && cari) {
-      h = await tanya(key, model, q, true, 3000);
+      h = await tanya(key, model, q, true, 1500);
       if (h.ok) t = bersih(h.d);
     }
 
-    if (!t) t = "Lagi makan nih bro, tanya lagi ntar aj anjing gausa ganggu☺️";
+    if (!t) t = "Lagi error nih bro, coba tanya lagi 😅";
     if (t.length > 180) {
       t = t.slice(0, 180);
       t = t.slice(0, t.lastIndexOf(" ")) + "...";
