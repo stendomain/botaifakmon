@@ -1,10 +1,12 @@
+const SISTEM = "Lu asisten chat live stream yang santai banget, kocak, dan suka ngelawak. Ngomong pakai bahasa Indonesia gaul sehari-hari kayak ngobrol sama temen: pakai lu-gue, boleh pakai kata kayak 'wkwk', 'dong', 'sih', 'bro'. Selipin satu sampai dua emoji di tiap jawaban (misalnya 😂🔥😎👀🗿), dan kasih bercandaan ringan atau roasting halus yang nggak nyakitin. Jangan bercanda soal SARA atau hal sensitif. Kalau pertanyaannya soal orang, tim, berita, kejadian, skor, harga, atau apa pun yang bisa berubah, cari di web SEKALI aja secara singkat, lalu jawab berdasarkan hasilnya, jangan nebak dari ingatan dan jangan buka banyak halaman. Jawab langsung pertanyaannya dalam satu atau dua kalimat pendek, TOTAL maksimal 170 karakter termasuk emoji, teks polos tanpa markdown, tanpa link dan tanpa nomor rujukan. Jangan pernah ngawali jawaban pakai nama diikuti titik dua; langsung jawab natural kayak lagi ngobrol. Jangan ngarang fakta; kalau hasil pencarian nggak jelas atau nggak ketemu, bilang nggak yakin dengan gaya santai.";
+
 async function tanya(key, model, q, cari, maxTokens) {
   const body = {
     model,
     max_tokens: maxTokens,
     reasoning_effort: "low",
     messages: [
-      { role: "system", content: "Lu asisten chat live stream yang santai banget, kocak, dan suka ngelawak. Ngomong pakai bahasa Indonesia gaul sehari-hari kayak ngobrol sama temen: pakai lu-gue, boleh pakai kata kayak 'wkwk', 'dong', 'sih', 'bro'. Selipin satu sampai dua emoji di tiap jawaban (misalnya 😂🔥😎👀🗿), dan kasih bercandaan ringan atau roasting halus yang nggak nyakitin. Jangan bercanda soal SARA atau hal sensitif. Kalau pertanyaannya soal orang, tim, berita, kejadian, skor, harga, atau apa pun yang bisa berubah, cari di web SEKALI aja secara singkat, lalu jawab berdasarkan hasilnya, jangan nebak dari ingatan dan jangan buka banyak halaman. Jawab langsung pertanyaannya dalam satu atau dua kalimat pendek, TOTAL maksimal 170 karakter termasuk emoji, teks polos tanpa markdown, tanpa link dan tanpa nomor rujukan. Jangan pernah ngawali jawaban pakai nama diikuti titik dua; langsung jawab natural kayak lagi ngobrol. Jangan ngarang fakta; kalau hasil pencarian nggak jelas atau nggak ketemu, bilang nggak yakin dengan gaya santai." },
+      { role: "system", content: SISTEM },
       { role: "user", content: q },
     ],
   };
@@ -42,18 +44,27 @@ export default {
       return new Response(j.data.map((x) => x.id).join("\n"));
     }
 
-    const model = u.searchParams.get("m") || "openai/gpt-oss-120b";
+    const utama = u.searchParams.get("m") || "openai/gpt-oss-120b";
+    const urutan = [utama, "openai/gpt-oss-20b"].filter((x, i, a) => a.indexOf(x) === i);
 
-    let h = await tanya(key, model, q, cari, cari ? 1000 : 400);
-    if (!h.ok) return new Response("Groq " + h.status + " (" + model + "): " + (h.d.error?.message || "unknown").slice(0, 120));
+    let h, pakai;
+    for (const model of urutan) {
+      pakai = model;
+      h = await tanya(key, model, q, cari, cari ? 1000 : 400);
+      if (h.status !== 429) break;
+    }
+
+    if (h.status === 429) return new Response("Jatah lu lagi abis bro ajg nanya mulu, ntar aja apa, gawe bat ini gua💩");
+    if (!h.ok) return new Response("Groq " + h.status + " (" + pakai + "): " + (h.d.error?.message || "unknown").slice(0, 120));
+
     let t = bersih(h.d);
 
     if (!t && cari) {
-      h = await tanya(key, model, q, true, 1500);
+      h = await tanya(key, pakai, q, true, 1500);
       if (h.ok) t = bersih(h.d);
     }
 
-    if (!t) t = "Lagi error nih bro, coba tanya lagi 😅";
+    if (!t) t = "Lagi makan nih coy gosa ganggu dl, ntar deh gw jawab klo mood";
     if (t.length > 180) {
       t = t.slice(0, 180);
       t = t.slice(0, t.lastIndexOf(" ")) + "...";
