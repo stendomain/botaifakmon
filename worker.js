@@ -10,7 +10,7 @@ async function tanya(key, model, q, cari, maxTokens) {
       { role: "user", content: q },
     ],
   };
-  if (cari) body.tools = [{ type: "browser_search" }];
+  if (cari) body.tools = [{ type: "browser_search" }, { type: "code_interpreter" }];
   const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
     headers: { Authorization: "Bearer " + key, "content-type": "application/json" },
